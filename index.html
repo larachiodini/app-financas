@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Minhas Finanças</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'></text></svg>">
 <script>try{if(localStorage.getItem('financas:pin'))document.documentElement.classList.add('locked')}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -411,7 +411,7 @@ let tt;
 function toast(m) { const el = $('#toast'); el.textContent = m; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 3400); }
 
 /* ---------- categorias ---------- */
-const CAT_SAIDA = ['Moradia', 'Alimentação', 'Transporte', 'Saúde', 'Lazer', 'Educação', 'Assinaturas', 'Compras', 'Parcelas', 'Contas', 'Outros'];
+const CAT_SAIDA = ['Alimentação', 'Transporte', 'Aulas', 'Saúde', 'Lazer', 'Assinaturas', 'Compras', 'Parcelas', 'Contas', 'Outros'];
 const CAT_ENTRADA = ['Salário', 'Freelance', 'Investimentos', 'Reembolso', 'Outros'];
 const TODAS = [...new Set([...CAT_SAIDA, ...CAT_ENTRADA])];
 const CORES = ['#1D4E63', '#C2574F', '#2E7D5B', '#C08A2E', '#6B5CA5', '#3D8FA6', '#A0567A', '#7A8B3A', '#8A6A55', '#4F6D7A', '#9AA5A8', '#2E7D5B', '#3D8FA6', '#7A8B3A', '#C08A2E'];
