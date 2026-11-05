@@ -411,8 +411,8 @@ let tt;
 function toast(m) { const el = $('#toast'); el.textContent = m; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 3400); }
 
 /* ---------- categorias ---------- */
-const CAT_SAIDA = ['Alimentação', 'Transporte', 'Aulas', 'Saúde', 'Lazer', 'Assinaturas', 'Compras', 'Parcelas', 'Contas', 'Outros'];
-const CAT_ENTRADA = ['Salário', 'Freelance', 'Investimentos', 'Reembolso', 'Outros'];
+const CAT_SAIDA = ['Alimentação', 'Transporte', 'Aulas', 'Saúde', 'Lazer', 'Assinaturas', 'Compras', 'Investimentos', 'Contas', 'Parcela'];
+const CAT_ENTRADA = ['Salário', 'Vale Alimentação', 'Freelance', 'Reembolso'];
 const TODAS = [...new Set([...CAT_SAIDA, ...CAT_ENTRADA])];
 const CORES = ['#1D4E63', '#C2574F', '#2E7D5B', '#C08A2E', '#6B5CA5', '#3D8FA6', '#A0567A', '#7A8B3A', '#8A6A55', '#4F6D7A', '#9AA5A8', '#2E7D5B', '#3D8FA6', '#7A8B3A', '#C08A2E'];
 const corCat = c => CORES[Math.max(0, TODAS.indexOf(c)) % CORES.length];
