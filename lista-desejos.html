@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#EDF0EE">
+  <title>Lista de desejos do mês</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #EDF0EE;
+      --surface: #fff;
+      --ink: #18252B;
+      --muted: #5A676C;
+      --line: #D3DBD7;
+      --accent: #1D4E63;
+      --accent-ink: #fff;
+      --sunk: #E2E7E4;
+      --good: #2E7D5B;
+      --danger: #B3344A;
+      --body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121A1D;
+        --surface: #1B2428;
+        --ink: #E4EBE8;
+        --muted: #98A8AD;
+        --line: #2E3B40;
+        --accent: #86C0D6;
+        --accent-ink: #0E2530;
+        --sunk: #243035;
+        --good: #5CC398;
+        --danger: #F08497;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: max(24px, env(safe-area-inset-top)) 16px max(40px, env(safe-area-inset-bottom));
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.5 var(--body);
+      font-variant-numeric: tabular-nums;
+    }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .page { width: min(100%, 860px); margin: 0 auto; }
+    .top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+    h1 { margin: 0; font-size: clamp(1.7rem, 5vw, 2.4rem); line-height: 1.1; letter-spacing: -.03em; }
+    .back { color: var(--muted); text-decoration: none; font-weight: 600; }
+    .back:hover { color: var(--ink); text-decoration: underline; }
+    .month { display: flex; align-items: center; gap: 8px; padding: 5px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; }
+    .month button { width: 38px; height: 38px; border: 0; border-radius: 50%; background: transparent; color: var(--ink); cursor: pointer; font-size: 1.35rem; }
+    .month button:hover { background: var(--sunk); }
+    .month strong { min-width: 160px; text-align: center; text-transform: capitalize; }
+    .card { padding: clamp(18px, 4vw, 26px); background: var(--surface); border: 1px solid var(--line); border-radius: 18px; }
+    .form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    label { color: var(--muted); font-size: .9rem; font-weight: 600; }
+    input { width: 100%; min-width: 0; padding: 11px 12px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
+    .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .btn { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; padding: 10px 15px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font-weight: 650; text-decoration: none; cursor: pointer; }
+    .btn:hover { background: var(--sunk); }
+    .btn.primary { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+    .btn.primary:hover { filter: brightness(1.08); }
+    .summary { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin: 24px 2px 12px; }
+    .summary h2 { margin: 0; font-size: 1.2rem; }
+    .total { color: var(--muted); }
+    .total strong { color: var(--ink); font-size: 1.35rem; }
+    .items { display: grid; gap: 10px; }
+    .item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 15px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+    .item.done { opacity: .68; }
+    .item.done .product { text-decoration: line-through; }
+    .check { width: 20px; height: 20px; accent-color: var(--good); cursor: pointer; }
+    .details { min-width: 0; }
+    .product { display: block; overflow-wrap: anywhere; font-weight: 650; }
+    .link { display: inline-block; max-width: 100%; overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; font-size: .88rem; }
+    .right { display: flex; align-items: center; gap: 12px; }
+    .price { white-space: nowrap; font-weight: 700; }
+    .remove { width: 36px; height: 36px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; font-size: 1.3rem; }
+    .remove:hover { background: var(--sunk); color: var(--danger); }
+    .empty { padding: 22px; color: var(--muted); text-align: center; background: var(--surface); border: 1px dashed var(--line); border-radius: 14px; }
+    .note { margin: 18px 2px 0; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 560px) {
+      .form { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .item { grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
+      .right { grid-column: 2; justify-content: space-between; }
+      .month strong { min-width: 140px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <a class="back" href="./">← Minhas Finanças</a>
+        <h1>Lista de desejos</h1>
+      </div>
+      <div class="month" role="group" aria-label="Mês da lista">
+        <button type="button" id="prev" aria-label="Mês anterior">‹</button>
+        <strong id="monthLabel" aria-live="polite"></strong>
+        <button type="button" id="next" aria-label="Próximo mês">›</button>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="formTitle">
+      <h2 id="formTitle">Adicionar um desejo</h2>
+      <form class="form" id="wishForm">
+        <div class="field full">
+          <label for="product">Produto</label>
+          <input id="product" name="product" maxlength="120" placeholder="Ex.: Fone de ouvido" required autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="url">Link de compra (opcional)</label>
+          <input id="url" name="url" type="url" inputmode="url" placeholder="https://loja.com/produto">
+        </div>
+        <div class="field">
+          <label for="price">Valor (R$)</label>
+          <input id="price" name="price" inputmode="decimal" placeholder="0,00" required autocomplete="off">
+        </div>
+        <div class="actions field full">
+          <button class="btn primary" type="submit">Adicionar à lista</button>
+        </div>
+      </form>
+    </section>
+
+    <section aria-labelledby="listTitle">
+      <div class="summary">
+        <h2 id="listTitle">Desejos do mês</h2>
+        <div class="total">Total da lista: <strong id="total">R$ 0,00</strong></div>
+      </div>
+      <div class="items" id="items" aria-live="polite"></div>
+      <p class="note">A lista fica salva neste navegador e é separada por mês. Marcar um produto como comprado não o remove do total.</p>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'financas:desejos:v1';
+    const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+    const $ = selector => document.querySelector(selector);
+    const pad = n => String(n).padStart(2, '0');
+    const monthNow = new Date();
+    let month = `${monthNow.getFullYear()}-${pad(monthNow.getMonth() + 1)}`;
+    let wishes = [];
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      if (Array.isArray(saved)) wishes = saved;
+    } catch (error) {
+      wishes = [];
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(wishes));
+      } catch (error) {
+        alert('Não foi possível salvar. Verifique o espaço disponível no navegador.');
+      }
+    }
+
+    function formatMonth(value) {
+      const [year, number] = value.split('-').map(Number);
+      return new Date(year, number - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    }
+
+    function parsePrice(value) {
+      let text = String(value).trim().replace(/\s|R\$/g, '');
+      if (text.includes(',')) text = text.replace(/\./g, '').replace(',', '.');
+      return Number(text);
+    }
+
+    function safeUrl(value) {
+      if (!value) return '';
+      try {
+        const url = new URL(value);
+        return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+      } catch (error) {
+        return '';
+      }
+    }
+
+    function render() {
+      $('#monthLabel').textContent = formatMonth(month);
+      const list = wishes.filter(w => w.month === month);
+      $('#total').textContent = currency.format(list.reduce((sum, wish) => sum + wish.price, 0));
+      const container = $('#items');
+      if (!list.length) {
+        container.innerHTML = '<div class="empty">Sua lista está vazia. Adicione um produto que gostaria de comprar.</div>';
+        return;
+      }
+      container.innerHTML = list.map(wish => {
+        const link = safeUrl(wish.url);
+        return `<article class="item ${wish.done ? 'done' : ''}">
+          <input class="check" type="checkbox" data-toggle="${escapeHTML(wish.id)}" aria-label="Marcar ${escapeHTML(wish.product)} como comprado" ${wish.done ? 'checked' : ''}>
+          <div class="details">
+            <span class="product">${escapeHTML(wish.product)}</span>
+            ${link ? `<a class="link" href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer">${escapeHTML(wish.url)}</a>` : '<span class="link">Sem link de compra</span>'}
+          </div>
+          <div class="right">
+            <span class="price">${currency.format(wish.price)}</span>
+            <button type="button" class="remove" data-remove="${escapeHTML(wish.id)}" aria-label="Excluir ${escapeHTML(wish.product)}">×</button>
+          </div>
+        </article>`;
+      }).join('');
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    }
+
+    $('#wishForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const product = $('#product').value.trim();
+      const rawUrl = $('#url').value.trim();
+      const price = parsePrice($('#price').value);
+      if (!product || !Number.isFinite(price) || price <= 0) {
+        alert('Informe o nome do produto e um valor maior que zero.');
+        return;
+      }
+      if (rawUrl && !safeUrl(rawUrl)) {
+        alert('Informe um link válido começando com https:// ou http://.');
+        $('#url').focus();
+        return;
+      }
+      wishes.push({ id: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`, month, product, url: rawUrl, price, done: false });
+      save();
+      event.target.reset();
+      $('#product').focus();
+      render();
+    });
+
+    $('#items').addEventListener('change', event => {
+      const id = event.target.dataset.toggle;
+      if (!id) return;
+      const wish = wishes.find(item => item.id === id);
+      if (wish) { wish.done = event.target.checked; save(); render(); }
+    });
+
+    $('#items').addEventListener('click', event => {
+      const id = event.target.dataset.remove;
+      if (!id) return;
+      const wish = wishes.find(item => item.id === id);
+      if (!wish || !confirm(`Excluir “${wish.product}” da lista?`)) return;
+      wishes = wishes.filter(item => item.id !== id);
+      save();
+      render();
+    });
+
+    function shiftMonth(amount) {
+      const [year, number] = month.split('-').map(Number);
+      const date = new Date(year, number - 1 + amount, 1);
+      month = `${date.getFullYear()}-${pad(date.getMonth() + 1)}`;
+      render();
+    }
+    $('#prev').addEventListener('click', () => shiftMonth(-1));
+    $('#next').addEventListener('click', () => shiftMonth(1));
+    render();
+  </script>
+</body>
+</html>
